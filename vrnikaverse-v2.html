@@ -187,6 +187,12 @@ body{height:600vh}
 #loader.gone{opacity:0;pointer-events:none}
 .ld-ring{width:60px;height:60px;border-radius:50%;border:1px solid rgba(123,91,255,0.2);border-top-color:#7B5BFF;animation:spin 1s linear infinite}
 .ld-txt{font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:0.2em;animation:blink 1s infinite}
+
+/* Tablet */
+@media (max-width: 1100px){.proj-grid{grid-template-columns:repeat(2, 240px);}}
+
+/* Mobile */
+@media (max-width: 600px){.proj-grid{grid-template-columns: 1fr;justify-items:center;}.pc{width:90%;max-width:300px;}}
 </style>
 </head>
 <body>
@@ -1068,15 +1074,11 @@ function loop(t){
   RAF=requestAnimationFrame(loop);
 }
 
-const visitedXP = new Set();
 function updateXP(index){
   const data = XP_DATA[index];
   const fill = document.getElementById('xpFill');
   const text = document.getElementById('xpText');
   const sceneXP = document.querySelector('.scene.active .scene-xp');
-
-  if(visitedXP.has(index)) return;
-  visitedXP.add(index);
 
   // update bottom bar
   fill.style.width = data.xp + '%';
@@ -1086,14 +1088,20 @@ function updateXP(index){
   sceneXP.textContent = data.msg;
 
   // animate XP popup
-  sceneXP.style.opacity = '0';
-  sceneXP.style.transform = 'translateY(-10px)';
+  if(!sceneXP.dataset.shown || sceneXP.dataset.shown != index){
+    sceneXP.textContent = data.msg;
 
-  setTimeout(()=>{
-    sceneXP.style.transition = 'all 0.6s ease';
-    sceneXP.style.opacity = '0.9';
-    sceneXP.style.transform = 'translateY(0)';
-  },50);
+    sceneXP.style.opacity = '0';
+    sceneXP.style.transform = 'translateY(-10px)';
+
+    setTimeout(()=>{
+      sceneXP.style.transition = 'all 0.6s ease';
+      sceneXP.style.opacity = '0.9';
+      sceneXP.style.transform = 'translateY(0)';
+    },50);
+
+    sceneXP.dataset.shown = index;
+  }
 }
 
 const curEl=document.getElementById('cur');
